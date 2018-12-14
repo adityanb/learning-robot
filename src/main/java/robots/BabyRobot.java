@@ -38,17 +38,23 @@ public class BabyRobot extends AdvancedRobot {
         });
         initRobot();
         while (true) {
-            options = getOptions(Constants.POLICY.OFF_POLICY, REWARD_POLICY.INTERMEDIATE, 15);
+            options = getOptions(Constants.POLICY.OFF_POLICY, REWARD_POLICY.INTERMEDIATE, 0);
             setTurnRadarRight(360);
             int state = getState();
             Constants.ACTION action = qLearner.selectAction(state, options.getMovePolicy());
             action.perform(this);
             execute();
-            if (options.getMovePolicy().equals(MOVE_POLICY.EXPLORATORY)) {
-                qLearner.learn(state, action, reward, options.getPolicy());
-            }
+            qLearner.learn(state, action, reward, options.getPolicy());
             reward = 0.0;
 
+
+        }
+    }
+
+    @Override
+    public void onBulletHitBullet(BulletHitBulletEvent event) {
+        if (options.intermediateRewardsAllowed()) {
+            reward += REWARD.ON_BAD_MOVE.reward();
         }
     }
 
@@ -62,6 +68,7 @@ public class BabyRobot extends AdvancedRobot {
     public void onBulletHit(BulletHitEvent e) {
         if (options.intermediateRewardsAllowed()) {
             reward += REWARD.ON_GOOD_MOVE.reward();
+
         }
     }
 
@@ -151,21 +158,22 @@ public class BabyRobot extends AdvancedRobot {
 
     private int getState() {
         QuantizedState.QueryBuilder queryBuilder = new QuantizedState.QueryBuilder();
-        QuantizedState.Query query = queryBuilder.withHeading(getHeading())
-                .withEnemyDistance(enemy.getDistance())
-                .withEnemyBearing(enemy.getBearing())
+        QuantizedState.Query query = queryBuilder
+                .withHeading(getHeading())
+                .withEnergy(getEnergy())
                 .withXPosition(getX())
                 .withYPosition(getY())
+                .withEnemyDistance(enemy.getDistance())
+                .withEnemyBearing(enemy.getBearing())
+                .withEnemyEnergy(enemy.getEnergy())
                 .build();
-
-
         return quantizedState.getStateRepresenting(query);
     }
 
     private Options getOptions(Constants.POLICY policy, REWARD_POLICY rewardPolicy, int epsilon) {
         MOVE_POLICY movePolicy;
         if (epsilon == 0) {
-            //Switch policy to greedy if we are 2/3 rds through the battle
+            //Switch policy to greedy for the last 20% of the rounds
             movePolicy = getRoundNum() >= (0.80 * getNumRounds()) ? MOVE_POLICY.GREEDY : MOVE_POLICY.EXPLORATORY;
         } else {
             //1 in epsilon chance of being greedy

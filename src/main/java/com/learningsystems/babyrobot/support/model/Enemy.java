@@ -6,16 +6,17 @@ public class Enemy {
 
     private final double distance;
     private final double bearing;
+    public static final Enemy ABSENT_ENEMY = new Enemy(-1, -1, -1);
+    private double energy;
 
-    public static final Enemy ABSENT_ENEMY = new Enemy(0, 0);
-
-    private Enemy(double distance, double bearing) {
+    private Enemy(double distance, double bearing, double energy) {
         this.distance = distance;
         this.bearing = bearing;
+        this.energy = energy;
     }
 
     public static Enemy update(ScannedRobotEvent e) {
-        return new Enemy(e.getDistance(), e.getBearing());
+        return new Enemy(e.getDistance(), e.getBearing(), e.getEnergy());
     }
 
     public double getDistance() {
@@ -24,5 +25,9 @@ public class Enemy {
 
     public double getBearing() {
         return bearing;
+    }
+
+    public double getEnergy() {
+        return energy;
     }
 }
