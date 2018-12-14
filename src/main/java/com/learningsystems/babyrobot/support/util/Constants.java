@@ -1,9 +1,10 @@
 package com.learningsystems.babyrobot.support.util;
 
+import com.learningsystems.babyrobot.support.model.Enemy;
 import robocode.AdvancedRobot;
 
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public class Constants {
 
@@ -13,20 +14,26 @@ public class Constants {
     public static final double DISCOUNT_FACTOR = 0.9;
     public static final int BATTLE_AUDIT_BATCH_PERCENTAGE = 10;
 
+
     public enum ACTION {
-        FORWARD(robot -> robot.setAhead(150)),
-        BACKWARD(robot -> robot.setBack(100)),
-        LEFT(robot -> robot.setTurnLeft(15)),
-        RIGHT(robot -> robot.setTurnRight(15)),
-        FIRE(robot -> {
+        FORWARD((robot, enemy) -> {
+            robot.setAhead(150);
+        }),
+        BACKWARD((robot, enemy) -> robot.setBack(100)),
+        LEFT((robot, enemy) -> robot.setTurnLeft(15)),
+        RIGHT((robot, enemy) -> robot.setTurnRight(15)),
+        FIRE((robot, enemy) -> {
             if (robot.getGunHeat() == 0) {
+                RobotFunctions.aimGunAtEnemy(robot, enemy);
                 robot.setFire(1);
             }
-        });
+        }),
+//        AIM(RobotFunctions::aimGunAtEnemy)
+        ;
 
-        private Consumer<AdvancedRobot> robotConsumer;
+        private BiConsumer<AdvancedRobot, Enemy> robotConsumer;
 
-        ACTION(Consumer<AdvancedRobot> robotConsumer) {
+        ACTION(BiConsumer<AdvancedRobot, Enemy> robotConsumer) {
             this.robotConsumer = robotConsumer;
         }
 
@@ -34,9 +41,10 @@ public class Constants {
             return values()[ThreadLocalRandom.current().nextInt(values().length)];
         }
 
-        public void perform(AdvancedRobot robot) {
-            robotConsumer.accept(robot);
+        public void perform(AdvancedRobot robot, Enemy enemy) {
+            robotConsumer.accept(robot, enemy);
         }
+
     }
 
     public enum REWARD_POLICY {

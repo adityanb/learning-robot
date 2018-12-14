@@ -42,7 +42,7 @@ public class BabyRobot extends AdvancedRobot {
             setTurnRadarRight(360);
             int state = getState();
             Constants.ACTION action = qLearner.selectAction(state, options.getMovePolicy());
-            action.perform(this);
+            action.perform(this, enemy);
             execute();
             qLearner.learn(state, action, reward, options.getPolicy());
             reward = 0.0;
@@ -61,7 +61,6 @@ public class BabyRobot extends AdvancedRobot {
     @Override
     public void onScannedRobot(ScannedRobotEvent e) {
         enemy = Enemy.update(e);//TODO: This should be more memory efficient
-        aimGunAtEnemy(e);
     }
 
     @Override
@@ -115,14 +114,6 @@ public class BabyRobot extends AdvancedRobot {
         onEndOfBattle();
     }
 
-    // normalizes a bearing to between +180 and -180
-    double normalizeBearing(double angle) {
-        while (angle > 180) angle -= 360;
-        while (angle < -180) angle += 360;
-        return angle;
-    }
-
-
     //There is an issue with the event 'onBattleEnded'. Hence, using this makeshift method.
     //The 'onBattleEnded' event does not seem to be the last method called. For e.g., onWin or onDeath could be called after this. Non-deterministic
     private void onEndOfBattle() {
@@ -139,12 +130,6 @@ public class BabyRobot extends AdvancedRobot {
         }
     }
 
-    //    http://mark.random-article.com/weber/java/robocode/lesson4.html
-    private void aimGunAtEnemy(ScannedRobotEvent e) {
-        double turn = getHeading() - getGunHeading() + e.getBearing();
-        // normalize the turn to take the shortest path there
-        setTurnGunRight(normalizeBearing(turn));
-    }
 
     private void initRobot() {
         setColors(Color.blue, Color.red, Color.GREEN);
