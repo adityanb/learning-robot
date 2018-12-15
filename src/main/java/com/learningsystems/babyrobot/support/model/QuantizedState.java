@@ -28,7 +28,7 @@ public class QuantizedState {
                         for (int e = 0; e < battleGroundDimension.getQuantizedY(); e++) {
                             for (int f = 0; f < ENERGY.numberOfStates(); f++) {
                                 for (int g = 0; g < ENERGY.numberOfStates(); g++) {
-                                    states[a][b][c][d][e][f][g] = ++count;
+                                    states[a][b][c][d][e][f][g] = count++;
                                 }
                             }
                         }

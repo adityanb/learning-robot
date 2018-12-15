@@ -46,8 +46,6 @@ public class BabyRobot extends AdvancedRobot {
             execute();
             qLearner.learn(state, action, reward, options.getPolicy());
             reward = 0.0;
-
-
         }
     }
 
