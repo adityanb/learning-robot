@@ -12,7 +12,7 @@ public class Constants {
     public static final String BATTLE_REPORT_FILE = "BattleReport.csv";
     public static final double LEARNING_RATE = 0.1;
     public static final double DISCOUNT_FACTOR = 0.9;
-    public static final int BATTLE_AUDIT_BATCH_PERCENTAGE = 5;
+    public static final int BATTLE_AUDIT_BATCH_PERCENTAGE = 10;
 
 
     public enum ACTION {

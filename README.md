@@ -25,4 +25,17 @@ mvn install:install-file -Dfile=@lib_directory/robocode.jar -DartifactId=robocod
 - Make sure your robot is in a top level package called 'robots'. The battle editor seems to look for this sepcific package name and it must be the highest package.
 - It is possible that the robots do not appear in the Robocode window. This can be corrected by adding the location of the 'robots' directory in 'Development Options' accessible via the 'Options -> Preferences'
 - To make your custom robot appear in the battle editor's list, add your 'target' directory as a location in the devlopment options 
-Note: Although the above works by just adding the 'robocode.jar' as a dependency, you will need to have all the other jars (robocode core, robocode ui etc) in the same directory as 'robocode.jar'. Robocode depends on all the libs and uses the 'robocode.jar' as a gateway to access the rest of the dependencies. 
+Note: Although the above works by just adding the 'robocode.jar' as a dependency, you will need to have all the other jars (robocode core, robocode ui etc) in the same directory as 'robocode.jar'. Robocode depends on all the libs and uses the 'robocode.jar' as a gateway to access the rest of the dependencies.
+
+
+# Run Configurations
+There are 3 ways to run Robocode
+    - Robocode run configuration without GUI
+        ``  Main class: Robocode
+            Args: -nodisplay -battle battles/robot.battle -results battles/battle_results.txt
+            VM options: -Ddebug=true -Dsun.io.useCanonCaches=false -DNOSECURITY=true -Xmx4G``
+    - Battle engine
+        ``VM options: -Ddebug=true -Dsun.io.useCanonCaches=false -DNOSECURITY=true -Xmx4G``
+    - Robocode GUI 
+        ``  Main class: Robocode
+            VM options: -Ddebug=true -Dsun.io.useCanonCaches=false -DNOSECURITY=true -Xmx4G``
