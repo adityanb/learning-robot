@@ -43,8 +43,10 @@ public class BabyRobot extends AdvancedRobot {
             Constants.ACTION action = qLearner.selectAction(state, options.getMovePolicy());
             action.perform(this, enemy);
             execute();
-            qLearner.learn(state, action, reward, options.getPolicy());
-            reward = 0.0;
+            if (reward != 0) {
+                qLearner.learn(state, action, reward, options.getPolicy());
+                reward = 0.0;
+            }
         }
     }
 
