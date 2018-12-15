@@ -19,12 +19,12 @@ public class QLearner {
         double error;
         if (policy.equals(Constants.POLICY.OFF_POLICY)) {
             error = Constants.LEARNING_RATE * (reward + Constants.DISCOUNT_FACTOR * lookUpTable.getBestAction(currentState).getValue() - lastQValue);
-            double current_Q = lastQValue + error;
-            lookUpTable.setQValue(previousState, previousAction, current_Q);
+            double currentQ = lastQValue + error;
+            lookUpTable.setQValue(previousState, previousAction, currentQ);
         } else {
             error = Constants.LEARNING_RATE * (reward + Constants.DISCOUNT_FACTOR * lookUpTable.getQValue(currentState, currentAction) - lastQValue);
-            double current_Q = lastQValue + error;
-            lookUpTable.setQValue(previousState, previousAction, current_Q);
+            double currentQ = lastQValue + error;
+            lookUpTable.setQValue(previousState, previousAction, currentQ);
         }
         previousState = currentState;
         previousAction = currentAction;

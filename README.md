@@ -39,3 +39,5 @@ There are 3 ways to run Robocode
     - Robocode GUI 
         ``  Main class: Robocode
             VM options: -Ddebug=true -Dsun.io.useCanonCaches=false -DNOSECURITY=true -Xmx4G``
+
+Note: -Ddebug=true -Dsun.io.useCanonCaches=false might cause Robocode to hang            

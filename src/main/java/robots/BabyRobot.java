@@ -15,7 +15,6 @@ import com.learningsystems.babyrobot.support.util.ReportGenerator;
 import robocode.*;
 
 import java.awt.*;
-import java.util.Random;
 
 
 public class BabyRobot extends AdvancedRobot {
@@ -25,7 +24,7 @@ public class BabyRobot extends AdvancedRobot {
     private static QLearner qLearner = new QLearner(new LookUpTable(quantizedState));
     private static BattleAuditor battleAuditor;
     private static boolean isNewBattle = true;
-    private static Random random = new Random();
+    private static MOVE_POLICY oldMovePolicy;
     private double reward;
     private Options options;
     private Enemy enemy = Enemy.ABSENT_ENEMY;
@@ -33,12 +32,12 @@ public class BabyRobot extends AdvancedRobot {
     @Override
     public void run() {
         onStartOfNewBattle(() -> {
-            qLearner.learnFromLastBattle(getDataFile(Constants.LOOKUP_TABLE_DB));
+//            qLearner.learnFromLastBattle(getDataFile(Constants.LOOKUP_TABLE_DB));
             battleAuditor = new BattleAuditor(getNumRounds(), Constants.BATTLE_AUDIT_BATCH_PERCENTAGE);
         });
         initRobot();
         while (true) {
-            options = getOptions(Constants.POLICY.OFF_POLICY, REWARD_POLICY.INTERMEDIATE, 20);
+            options = getOptions(Constants.POLICY.OFF_POLICY, REWARD_POLICY.INTERMEDIATE, 0);
             setTurnRadarRight(360);
             int state = getState();
             Constants.ACTION action = qLearner.selectAction(state, options.getMovePolicy());
@@ -153,10 +152,18 @@ public class BabyRobot extends AdvancedRobot {
         MOVE_POLICY movePolicy;
 
         if (epsilon == 0) {
-            epsilon = 80; //default exploratory poplicy to 80%
+            epsilon = 80; //default exploratory policy to 80%
         }
         //the next move is selected randomly with probability ε and greedily with probability 1 − ε
-        movePolicy = getRoundNum() > ((epsilon / 100) * getNumRounds()) ? MOVE_POLICY.GREEDY : MOVE_POLICY.EXPLORATORY;
+        movePolicy = getRoundNum() > (((double) epsilon / 100) * getNumRounds()) ? MOVE_POLICY.GREEDY : MOVE_POLICY.EXPLORATORY;
+        logPolicyChange(movePolicy, getRoundNum());
         return Options.update(rewardPolicy, movePolicy, policy);
+    }
+
+    private void logPolicyChange(MOVE_POLICY movePolicy, int roundNum) {
+        if (oldMovePolicy != movePolicy) {
+            System.out.println("Old policy: " + oldMovePolicy + " New policy: " + movePolicy + " Round: " + roundNum);
+            oldMovePolicy = movePolicy;
+        }
     }
 }

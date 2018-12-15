@@ -1,4 +1,4 @@
-package robots;
+package com.learningsystems.babyrobot.support;
 
 import robocode.control.BattleSpecification;
 import robocode.control.BattlefieldSpecification;
