@@ -2,7 +2,7 @@ package com.learningsystems.babyrobot.support.model;
 
 public class QuantizedState {
     private int numberOfStates;
-    private int[][][][][][][] uniqueStates;
+    private int[][][][][] uniqueStates;
     private BattleGroundDimension battleGroundDimension;
 
     public QuantizedState(BattleGroundDimension battleGroundDimension) {
@@ -15,22 +15,18 @@ public class QuantizedState {
     }
 
     public int getStateRepresenting(Query query) {
-        return uniqueStates[query.getSelfBearing()][query.getEnemyDistance()][query.getEnemyBearing()][query.getxPosition()][query.getyPosition()][query.getEnergy()][query.getEnemyEnergy()];
+        return uniqueStates[query.getSelfBearing()][query.getEnemyDistance()][query.getEnemyBearing()][query.getxPosition()][query.getyPosition()];
     }
 
-    private int[][][][][][][] init() {
-        int[][][][][][][] states = new int[BEARING.numberOfStates()][DISTANCE.numberOfStates()][BEARING.numberOfStates()][battleGroundDimension.getQuantizedX()][battleGroundDimension.getQuantizedY()][ENERGY.numberOfStates()][ENERGY.numberOfStates()];
+    private int[][][][][] init() {
+        int[][][][][] states = new int[BEARING.numberOfStates()][DISTANCE.numberOfStates()][BEARING.numberOfStates()][battleGroundDimension.getQuantizedX()][battleGroundDimension.getQuantizedY()];
         int count = 0;
         for (int a = 0; a < BEARING.numberOfStates(); a++) {
             for (int b = 0; b < DISTANCE.numberOfStates(); b++) {
                 for (int c = 0; c < BEARING.numberOfStates(); c++) {
                     for (int d = 0; d < battleGroundDimension.getQuantizedX(); d++) {
                         for (int e = 0; e < battleGroundDimension.getQuantizedY(); e++) {
-                            for (int f = 0; f < ENERGY.numberOfStates(); f++) {
-                                for (int g = 0; g < ENERGY.numberOfStates(); g++) {
-                                    states[a][b][c][d][e][f][g] = count++;
-                                }
-                            }
+                            states[a][b][c][d][e] = count++;
                         }
                     }
                 }
@@ -47,8 +43,6 @@ public class QuantizedState {
         private DISTANCE enemyDistance;
         private int xPosition;
         private int yPosition;
-        private ENERGY enemyEnergy;
-        private ENERGY energy;
 
         public QueryBuilder withHeading(double heading) {
             this.selfBearing = BEARING.quantizedValue((int) heading);
@@ -76,18 +70,8 @@ public class QuantizedState {
             return this;
         }
 
-        public QueryBuilder withEnemyEnergy(double energy) {
-            this.enemyEnergy = ENERGY.quantizedValue(energy);
-            return this;
-        }
-
-        public QueryBuilder withEnergy(double energy) {
-            this.energy = ENERGY.quantizedValue(energy);
-            return this;
-        }
-
         public Query build() {
-            return new Query(selfBearing, enemyBearing, enemyDistance, xPosition, yPosition, energy, enemyEnergy);
+            return new Query(selfBearing, enemyBearing, enemyDistance, xPosition, yPosition);
         }
 
         private int quantizePositionOnGrid(int position) {
@@ -102,17 +86,13 @@ public class QuantizedState {
         private final DISTANCE enemyDistance;
         private final int xPosition;
         private final int yPosition;
-        private final ENERGY energy;
-        private final ENERGY enemyEnergy;
 
-        private Query(BEARING selfBearing, BEARING enemyBearing, DISTANCE enemyDistance, int xPosition, int yPosition, ENERGY energy, ENERGY enemyEnergy) {
+        private Query(BEARING selfBearing, BEARING enemyBearing, DISTANCE enemyDistance, int xPosition, int yPosition) {
             this.selfBearing = selfBearing;
             this.enemyBearing = enemyBearing;
             this.enemyDistance = enemyDistance;
             this.xPosition = xPosition;
             this.yPosition = yPosition;
-            this.energy = energy;
-            this.enemyEnergy = enemyEnergy;
         }
 
         int getSelfBearing() {
@@ -135,13 +115,6 @@ public class QuantizedState {
             return yPosition;
         }
 
-        public int getEnergy() {
-            return energy.ordinal();
-        }
-
-        public int getEnemyEnergy() {
-            return enemyEnergy.ordinal();
-        }
     }
 
     enum BEARING {
@@ -179,27 +152,4 @@ public class QuantizedState {
         }
 
     }
-
-    enum ENERGY {
-        LOW, MEDIUM, HIGH;
-
-        public static int numberOfStates() {
-            return values().length;
-        }
-
-        public static ENERGY quantizedValue(double energy) {
-            if (energy < 40) {
-                return LOW;
-            }
-
-            if (energy < 70) {
-                return MEDIUM;
-            }
-
-            return HIGH;
-        }
-
-    }
-
-
 }

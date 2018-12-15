@@ -13,13 +13,12 @@ public class BattleEngine {
 
     public static void main(String[] args) {
         RobocodeEngine.setLogMessagesEnabled(true);
-        RobocodeEngine engine = new RobocodeEngine(); // Run from C:/Robocode
+        RobocodeEngine engine = new RobocodeEngine();
         engine.addBattleListener(new BattleObserver());
 
-        int numberOfRounds = 10000;
+        int numberOfRounds = 15000;
         BattlefieldSpecification battlefield = new BattlefieldSpecification(800, 600); // 800x600
         RobotSpecification[] selectedRobots = engine.getLocalRepository("robots.BabyRobot,sample.Corners");
-
         BattleSpecification battleSpec = new BattleSpecification(numberOfRounds, battlefield, selectedRobots);
 
         // Run our specified battle and let it run till it is over

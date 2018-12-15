@@ -38,7 +38,7 @@ public class BabyRobot extends AdvancedRobot {
         });
         initRobot();
         while (true) {
-            options = getOptions(Constants.POLICY.OFF_POLICY, REWARD_POLICY.INTERMEDIATE, 0);
+            options = getOptions(Constants.POLICY.OFF_POLICY, REWARD_POLICY.INTERMEDIATE, 10);
             setTurnRadarRight(360);
             int state = getState();
             Constants.ACTION action = qLearner.selectAction(state, options.getMovePolicy());
@@ -128,7 +128,6 @@ public class BabyRobot extends AdvancedRobot {
         }
     }
 
-
     private void initRobot() {
         setColors(Color.blue, Color.red, Color.GREEN);
         setAdjustGunForRobotTurn(true);
@@ -138,35 +137,26 @@ public class BabyRobot extends AdvancedRobot {
         setTurnRadarRight(360);
     }
 
-
     private int getState() {
         QuantizedState.QueryBuilder queryBuilder = new QuantizedState.QueryBuilder();
         QuantizedState.Query query = queryBuilder
                 .withHeading(getHeading())
-                .withEnergy(getEnergy())
                 .withXPosition(getX())
                 .withYPosition(getY())
                 .withEnemyDistance(enemy.getDistance())
                 .withEnemyBearing(enemy.getBearing())
-                .withEnemyEnergy(enemy.getEnergy())
                 .build();
         return quantizedState.getStateRepresenting(query);
     }
 
     private Options getOptions(Constants.POLICY policy, REWARD_POLICY rewardPolicy, int epsilon) {
         MOVE_POLICY movePolicy;
+
         if (epsilon == 0) {
-            //Switch policy to greedy for the last 20% of the rounds
-            movePolicy = getRoundNum() >= (0.80 * getNumRounds()) ? MOVE_POLICY.GREEDY : MOVE_POLICY.EXPLORATORY;
-        } else {
-            //1 in epsilon chance of being greedy
-            movePolicy = isProbablyGreedy(epsilon) ? MOVE_POLICY.GREEDY : MOVE_POLICY.EXPLORATORY;
+            epsilon = 80; //default exploratory poplicy to 80%
         }
-
+        //the next move is selected randomly with probability ε and greedily with probability 1 − ε
+        movePolicy = getRoundNum() > ((epsilon / 100) * getNumRounds()) ? MOVE_POLICY.GREEDY : MOVE_POLICY.EXPLORATORY;
         return Options.update(rewardPolicy, movePolicy, policy);
-    }
-
-    private boolean isProbablyGreedy(int epsilon) {
-        return random.nextInt(epsilon) == 0;
     }
 }

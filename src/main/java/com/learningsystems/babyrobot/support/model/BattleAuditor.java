@@ -13,7 +13,7 @@ public class BattleAuditor {
 
     public BattleAuditor(int numRoundsInBattle, int battleAuditBatchPercentage) {
         this.numRoundsInBattle = numRoundsInBattle;
-        this.battleAuditBatch = battleAuditBatchPercentage * numRoundsInBattle / 100;
+        this.battleAuditBatch = Math.max(battleAuditBatchPercentage * numRoundsInBattle / 100, 1);
     }
 
     public void recordWin() {
