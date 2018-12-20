@@ -37,14 +37,16 @@ public class BabyRobot extends AdvancedRobot {
         });
         initRobot();
         while (true) {
-            options = getOptions(Constants.POLICY.OFF_POLICY, REWARD_POLICY.INTERMEDIATE, 0);
+            options = getOptions(Constants.POLICY.OFF_POLICY, REWARD_POLICY.TERMINAL, 0);
             setTurnRadarRight(360);
             int state = getState();
             Constants.ACTION action = qLearner.selectAction(state, options.getMovePolicy());
             action.perform(this, enemy);
             execute();
             if (reward != 0) {
-                qLearner.learn(state, action, reward, options.getPolicy());
+                if (options.getMovePolicy() != MOVE_POLICY.GREEDY) {
+                    qLearner.learn(state, action, reward, options.getPolicy());
+                }
                 reward = 0.0;
             }
         }
