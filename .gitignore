@@ -2,4 +2,5 @@
 *.iml
 /target
 /config
+/robots/robot.database
 .DS_Store

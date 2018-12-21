@@ -4,7 +4,7 @@ import com.learningsystems.babyrobot.support.model.BattleAuditor;
 import com.learningsystems.babyrobot.support.model.BattleGroundDimension;
 import com.learningsystems.babyrobot.support.model.Enemy;
 import com.learningsystems.babyrobot.support.model.QuantizedState;
-import com.learningsystems.babyrobot.support.rl.LookUpTable;
+import com.learningsystems.babyrobot.support.predictor.Predictor;
 import com.learningsystems.babyrobot.support.rl.Options;
 import com.learningsystems.babyrobot.support.rl.QLearner;
 import com.learningsystems.babyrobot.support.util.Constants;
@@ -21,7 +21,8 @@ public class BabyRobot extends AdvancedRobot {
 
     //QLearner and QuantizedState are kept static so that we don't have to read and write the lookup table to the file at the end of each round
     private static QuantizedState quantizedState = new QuantizedState(new BattleGroundDimension(800, 600));
-    private static QLearner qLearner = new QLearner(new LookUpTable(quantizedState));
+    private static Predictor predictor = Predictor.get(Predictor.FLAVOR.LOOKUP_TABLE, quantizedState);
+    private static QLearner qLearner = new QLearner(predictor);
     private static BattleAuditor battleAuditor;
     private static boolean isNewBattle = true;
     private static MOVE_POLICY oldMovePolicy;
@@ -37,7 +38,7 @@ public class BabyRobot extends AdvancedRobot {
         });
         initRobot();
         while (true) {
-            options = getOptions(Constants.POLICY.OFF_POLICY, REWARD_POLICY.TERMINAL, 0);
+            options = getOptions(Constants.POLICY.OFF_POLICY, REWARD_POLICY.INTERMEDIATE, 0);
             setTurnRadarRight(360);
             int state = getState();
             Constants.ACTION action = qLearner.selectAction(state, options.getMovePolicy());
@@ -119,7 +120,7 @@ public class BabyRobot extends AdvancedRobot {
     //The 'onBattleEnded' event does not seem to be the last method called. For e.g., onWin or onDeath could be called after this. Non-deterministic
     private void onEndOfBattle() {
         if (getRoundNum() == getNumRounds() - 1) {
-            qLearner.saveLookUpTable(getDataFile(Constants.LOOKUP_TABLE_DB));
+            qLearner.save(getDataFile(Constants.LOOKUP_TABLE_DB));
             new ReportGenerator().generate(battleAuditor, getDataFile(Constants.BATTLE_REPORT_FILE));
         }
     }

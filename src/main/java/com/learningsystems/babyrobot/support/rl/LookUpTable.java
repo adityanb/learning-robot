@@ -19,7 +19,7 @@ public class LookUpTable {
     }
 
 
-    Pair<Constants.ACTION, Double> getBestAction(int state) {
+    public Pair<Constants.ACTION, Double> getBestAction(int state) {
         double maximumQValue = Double.NEGATIVE_INFINITY;
         int bestAction = 0;
         for (int i = 0; i < table[state].length; i++) {
@@ -32,12 +32,24 @@ public class LookUpTable {
         return Pair.of(Constants.ACTION.values()[bestAction], maximumQValue);
     }
 
-    double getQValue(int state, Constants.ACTION action) {
+    public double getQValue(int state, Constants.ACTION action) {
         return table[state][action.ordinal()];
     }
 
-    void setQValue(int state, Constants.ACTION action, double value) {
+    public void setQValue(int state, Constants.ACTION action, double value) {
         table[state][action.ordinal()] = value;
+    }
+
+    public void save(File file) {
+        try (PrintStream write = new PrintStream(new RobocodeFileOutputStream(file))) {
+            for (int i = 0; i < quantizedState.getNumberOfStates(); i++) {
+                for (int j = 0; j < Constants.ACTION.values().length; j++) {
+                    write.println(new Double(table[i][j]));
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     void load(File file) {
@@ -47,18 +59,6 @@ public class LookUpTable {
                     table[i][j] = Double.parseDouble(read.readLine());
         } catch (Exception e) {
             initialise();
-        }
-    }
-
-    void save(File file) {
-        try (PrintStream write = new PrintStream(new RobocodeFileOutputStream(file))) {
-            for (int i = 0; i < quantizedState.getNumberOfStates(); i++) {
-                for (int j = 0; j < Constants.ACTION.values().length; j++) {
-                    write.println(new Double(table[i][j]));
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
