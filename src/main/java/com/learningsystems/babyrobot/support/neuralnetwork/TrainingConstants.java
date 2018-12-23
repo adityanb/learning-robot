@@ -41,7 +41,7 @@ interface TrainingConstants {
         return (numberOfStates, inputs) -> {
             double[][] doubles;
             String statsFileName = stringRepresentation() + "-stats.txt";
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(statsFileName))) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(statsFileName, true))) {
                 doubles = Normalization.meanScaled(numberOfStates, writer, inputs);
             } catch (Exception e) {
                 throw new RuntimeException(e);
