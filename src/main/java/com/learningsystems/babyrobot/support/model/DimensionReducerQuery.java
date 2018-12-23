@@ -1,5 +1,7 @@
 package com.learningsystems.babyrobot.support.model;
 
+import java.util.StringJoiner;
+
 public class DimensionReducerQuery {
 
     private final double selfBearing;
@@ -14,6 +16,18 @@ public class DimensionReducerQuery {
         this.enemyDistance = enemyDistance;
         this.xPosition = xPosition;
         this.yPosition = yPosition;
+    }
+
+    @Override
+    public String toString() {
+        StringJoiner joiner = new StringJoiner(",");
+        return joiner
+                .add(String.valueOf(getSelfBearing()))
+                .add(String.valueOf(getEnemyDistance()))
+                .add(String.valueOf(getEnemyBearing()))
+                .add(String.valueOf(getxPosition()))
+                .add(String.valueOf(getyPosition()))
+                .toString();
     }
 
     double getSelfBearing() {
@@ -49,7 +63,7 @@ public class DimensionReducerQuery {
         }
 
         public Builder withEnemyBearing(double enemyBearing) {
-            //            Enemy bearing is a quantizedValue between -180 and +180. So we need to make this quantizedValue positive
+            //Enemy bearing is a quantizedValue between -180 and +180. So we need to make this quantizedValue positive
             this.enemyBearing = ((enemyBearing + 180d) / 90);
             return this;
         }

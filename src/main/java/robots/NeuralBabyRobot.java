@@ -24,12 +24,12 @@ public class NeuralBabyRobot extends AdvancedRobot {
     //        private static Predictor predictor = Predictor.get(Predictor.FLAVOR.NEURAL_NETWORK_ENCODED, quantizedState);
     private static Predictor predictor = Predictor.get(Predictor.FLAVOR.NEURAL_NETWORK_EXPLODED, quantizedState);
     private static QLearner qLearner = new QLearner(predictor);
-    private static BattleAuditor battleAuditor;
+    static BattleAuditor battleAuditor;
     private static boolean isNewBattle = true;
     private static MOVE_POLICY oldMovePolicy = MOVE_POLICY.EXPLORATORY;
-    private Options options;
-    private Enemy enemy = Enemy.ABSENT_ENEMY;
-    private Logger logger;
+    Options options;
+    Enemy enemy = Enemy.ABSENT_ENEMY;
+    Logger logger;
 
 
     @Override
@@ -76,14 +76,14 @@ public class NeuralBabyRobot extends AdvancedRobot {
         }
     }
 
-    private void onStartOfNewBattle(Runnable runnable) {
+    void onStartOfNewBattle(Runnable runnable) {
         if (isNewBattle) {
             runnable.run();
             isNewBattle = false;
         }
     }
 
-    private void initRobot() {
+    void initRobot() {
         setColors(Color.blue, Color.red, Color.GREEN);
         setAdjustGunForRobotTurn(true);
         setAdjustRadarForGunTurn(true);
@@ -104,7 +104,7 @@ public class NeuralBabyRobot extends AdvancedRobot {
         return quantizedState.getStateRepresenting(quantizedQuery);
     }
 
-    private Options getOptions(Constants.POLICY policy, REWARD_POLICY rewardPolicy, int epsilon) {
+    Options getOptions(Constants.POLICY policy, REWARD_POLICY rewardPolicy, int epsilon) {
         MOVE_POLICY movePolicy;
 
         if (epsilon == 0) {

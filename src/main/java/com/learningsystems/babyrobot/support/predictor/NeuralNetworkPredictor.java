@@ -62,7 +62,7 @@ public class NeuralNetworkPredictor implements Predictor {
         FeedforwardNetwork network();
     }
 
-    static class ExplodedInput implements Input {
+    public static class ExplodedInput implements Input {
 
         private final Normalization.Stat selfBearingStat;
         private final Normalization.Stat enemyDistanceStat;
@@ -86,6 +86,10 @@ public class NeuralNetworkPredictor implements Predictor {
         @Override
         public double[] normalize(Double state, Constants.ACTION action) {
             String[] splitInputs = quantizedState.decodeState(state.intValue()).split(",");
+            return normalize(action, splitInputs);
+        }
+
+        public double[] normalize(Constants.ACTION action, String[] splitInputs) {
             return new double[]{
                     Input.scaleMean(Double.valueOf(splitInputs[0]), selfBearingStat),
                     Input.scaleMean(Double.valueOf(splitInputs[1]), enemyDistanceStat),

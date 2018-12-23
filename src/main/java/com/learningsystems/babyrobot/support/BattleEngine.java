@@ -21,7 +21,8 @@ public class BattleEngine {
         int numberOfRounds = 1000;
         BattlefieldSpecification battlefield = new BattlefieldSpecification(800, 600); // 800x600
 //        RobotSpecification[] selectedRobots = engine.getLocalRepository("robots.BabyRobot,sample.Corners");
-        RobotSpecification[] selectedRobots = engine.getLocalRepository("robots.BabyRobot,sample.Corners");
+//        RobotSpecification[] selectedRobots = engine.getLocalRepository("robots.BabyRobot,sample.Corners");
+        RobotSpecification[] selectedRobots = engine.getLocalRepository("robots.DimensionalNeuralBabyRobot,sample.Corners");
         BattleSpecification battleSpec = new BattleSpecification(numberOfRounds, battlefield, selectedRobots);
 
         // Run our specified battle and let it run till it is over
@@ -43,7 +44,7 @@ public class BattleEngine {
         public BattleObserver() {
             buffer = new StringJoiner("\n");
             try {
-                writer = new BufferedWriter(new FileWriter("BattleStats-LUT.txt"));
+                writer = new BufferedWriter(new FileWriter("BattleStats-Dimensionality.txt"));
                 Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                     try {
                         writer.flush();
