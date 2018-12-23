@@ -18,10 +18,10 @@ public class BattleEngine {
         RobocodeEngine engine = new RobocodeEngine();
         engine.addBattleListener(new BattleObserver());
 
-        int numberOfRounds = 10000;
+        int numberOfRounds = 1000;
         BattlefieldSpecification battlefield = new BattlefieldSpecification(800, 600); // 800x600
 //        RobotSpecification[] selectedRobots = engine.getLocalRepository("robots.BabyRobot,sample.Corners");
-        RobotSpecification[] selectedRobots = engine.getLocalRepository("robots.NeuralBabyRobot,sample.Corners");
+        RobotSpecification[] selectedRobots = engine.getLocalRepository("robots.BabyRobot,sample.Corners");
         BattleSpecification battleSpec = new BattleSpecification(numberOfRounds, battlefield, selectedRobots);
 
         // Run our specified battle and let it run till it is over
@@ -43,7 +43,7 @@ public class BattleEngine {
         public BattleObserver() {
             buffer = new StringJoiner("\n");
             try {
-                writer = new BufferedWriter(new FileWriter("BattleStats-Exploded.txt"));
+                writer = new BufferedWriter(new FileWriter("BattleStats-LUT.txt"));
                 Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                     try {
                         writer.flush();

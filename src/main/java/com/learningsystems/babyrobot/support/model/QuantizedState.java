@@ -67,7 +67,7 @@ public class QuantizedState {
 
         //TODO: Re-use implementation in the main robot class
         public static BEARING quantizedValue(int heading) {
-            return BEARING.values()[(int) (heading / 90)];
+            return BEARING.values()[heading / 90];
         }
 
         public static int numberOfStates() {
