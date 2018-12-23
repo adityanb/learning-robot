@@ -2,16 +2,29 @@ package com.learningsystems.babyrobot.support.predictor;
 
 import com.learningsystems.babyrobot.support.model.Pair;
 import com.learningsystems.babyrobot.support.util.Constants;
+import com.learningsystems.babyrobot.support.util.Normalization;
 import com.learningsystems.backpropagation.FeedforwardNetwork;
 
 import java.io.File;
+import java.util.List;
 
 //Does not work because I am yet to figure out how to do online training
 public class NeuralNetworkPredictor implements Predictor {
     private final FeedforwardNetwork network;
+    private final Normalization.Stat encodedStateStat;
+    private final Normalization.Stat encodedAction;
 
     public NeuralNetworkPredictor() {
-        network = FeedforwardNetwork.loadFromFile("/Users/aditya/Development/ML/LearningSystemsRLRobot/data/TrainingRuns/2-9-0.01-5.0E-4-LookupTable.txt-Weights.ser");
+        network = FeedforwardNetwork.loadFromFile("/Users/aditya/Development/ML/LearningSystemsRLRobot/data/TrainingRuns/EncodedLUT-Normalized-IN-2-HN-9-MTM-0.5-LR-6.0E-4-Weights.ser");
+        List<Normalization.Stat> stats = Normalization.Stat.load("/Users/aditya/Development/ML/LearningSystemsRLRobot/data/TrainingRuns/EncodedLUT-Normalized-IN-2-HN-9-MTM-0.5-LR-6.0E-4-stats.txt");
+        encodedStateStat = stats.get(0);
+        encodedAction = stats.get(1);
+    }
+
+    public static void main(String[] args) {
+        NeuralNetworkPredictor neuralNetworkPredictor = new NeuralNetworkPredictor();
+        Pair<Constants.ACTION, Double> bestAction = neuralNetworkPredictor.getBestAction(908);
+        System.out.println("bestAction = " + bestAction);
     }
 
     @Override
@@ -29,15 +42,11 @@ public class NeuralNetworkPredictor implements Predictor {
         return Pair.of(action, qValue);
     }
 
-    public static void main(String[] args) {
-        NeuralNetworkPredictor neuralNetworkPredictor = new NeuralNetworkPredictor();
-        Pair<Constants.ACTION, Double> bestAction = neuralNetworkPredictor.getBestAction(567);
-        System.out.println("bestAction = " + bestAction);
-    }
-
     @Override
     public double getQValue(int state, Constants.ACTION action) {
-        double[] doubles = network.computeOutputs(new double[]{scaleMinMax(state), scaleMinMax(action.ordinal())});
+        double[] input = {scaleMean(state, encodedStateStat), scaleMean(action.ordinal(), encodedAction)};
+//        double[] input = {-0.48871037776812853, 0.5};
+        double[] doubles = network.computeOutputs(input);
         return doubles[0];
 
     }
@@ -57,10 +66,8 @@ public class NeuralNetworkPredictor implements Predictor {
 
     }
 
-    private double scaleMinMax(int ordinal) {
-        int min = 0;
-        int max = 1;
-
-        return ordinal - min;
+    private double scaleMean(int ordinal, Normalization.Stat stat) {
+        return (ordinal - stat.getAverage()) / (stat.getMax() - stat.getMin());
     }
+
 }
