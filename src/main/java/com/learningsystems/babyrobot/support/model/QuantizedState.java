@@ -1,5 +1,7 @@
 package com.learningsystems.babyrobot.support.model;
 
+import java.util.StringJoiner;
+
 public class QuantizedState {
     private int numberOfStates;
     private int[][][][][] uniqueStates;
@@ -16,6 +18,29 @@ public class QuantizedState {
 
     public int getStateRepresenting(Query query) {
         return uniqueStates[query.getSelfBearing()][query.getEnemyDistance()][query.getEnemyBearing()][query.getxPosition()][query.getyPosition()];
+    }
+
+    public String decodeState(int state) {
+        for (int a = 0; a < BEARING.numberOfStates(); a++) {
+            for (int b = 0; b < DISTANCE.numberOfStates(); b++) {
+                for (int c = 0; c < BEARING.numberOfStates(); c++) {
+                    for (int d = 0; d < battleGroundDimension.getQuantizedX(); d++) {
+                        for (int e = 0; e < battleGroundDimension.getQuantizedY(); e++) {
+                            if (uniqueStates[a][b][c][d][e] == state) {
+                                return new StringJoiner(",")
+                                        .add(Integer.toString(a))
+                                        .add(Integer.toString(b))
+                                        .add(Integer.toString(c))
+                                        .add(Integer.toString(d))
+                                        .add(Integer.toString(e))
+                                        .toString();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        throw new RuntimeException("Could not find a representation of state " + state);
     }
 
     private int[][][][][] init() {

@@ -1,5 +1,6 @@
 package robots;
 
+import com.learningsystems.babyrobot.support.Logger;
 import com.learningsystems.babyrobot.support.model.BattleAuditor;
 import com.learningsystems.babyrobot.support.model.BattleGroundDimension;
 import com.learningsystems.babyrobot.support.model.Enemy;
@@ -25,13 +26,16 @@ public class BabyRobot extends AdvancedRobot {
     private static QLearner qLearner = new QLearner(predictor);
     private static BattleAuditor battleAuditor;
     private static boolean isNewBattle = true;
-    private static MOVE_POLICY oldMovePolicy;
+    private static MOVE_POLICY oldMovePolicy = MOVE_POLICY.EXPLORATORY;
     private double reward;
     private Options options;
     private Enemy enemy = Enemy.ABSENT_ENEMY;
+    private Logger logger;
+
 
     @Override
     public void run() {
+        logger = new Logger(getDataFile("Log.log"));
         onStartOfNewBattle(() -> {
 //            qLearner.learnFromLastBattle(getDataFile(Constants.LOOKUP_TABLE_DB));
             battleAuditor = new BattleAuditor(getNumRounds(), Constants.BATTLE_AUDIT_BATCH_PERCENTAGE);
@@ -121,6 +125,7 @@ public class BabyRobot extends AdvancedRobot {
     private void onEndOfBattle() {
         if (getRoundNum() == getNumRounds() - 1) {
             qLearner.save(getDataFile(Constants.LOOKUP_TABLE_DB));
+            qLearner.saveAnother(getDataFile("Another.txt"));
             new ReportGenerator().generate(battleAuditor, getDataFile(Constants.BATTLE_REPORT_FILE));
         }
     }
@@ -161,14 +166,19 @@ public class BabyRobot extends AdvancedRobot {
         }
         //the next move is selected randomly with probability ε and greedily with probability 1 − ε
         movePolicy = getRoundNum() > (((double) epsilon / 100) * getNumRounds()) ? MOVE_POLICY.GREEDY : MOVE_POLICY.EXPLORATORY;
-        logPolicyChange(movePolicy, getRoundNum());
+        onPolicyChange(movePolicy, getRoundNum());
         return Options.update(rewardPolicy, movePolicy, policy);
     }
 
-    private void logPolicyChange(MOVE_POLICY movePolicy, int roundNum) {
+    private void onPolicyChange(MOVE_POLICY movePolicy, int roundNum) {
         if (oldMovePolicy != movePolicy) {
-            System.out.println("Old policy: " + oldMovePolicy + " New policy: " + movePolicy + " Round: " + roundNum);
+            logger.log("Old policy: " + oldMovePolicy + " New policy: " + movePolicy + " Round: " + roundNum);
             oldMovePolicy = movePolicy;
+           /* if (getRoundNum() > 0) {
+                NeuralNetworkPredictor neuralNetworkPredictor = (NeuralNetworkPredictor) Predictor.get(Predictor.FLAVOR.NEURAL_NETWORK, quantizedState);
+                neuralNetworkPredictor.train(((LookupTablePredictor) BabyRobot.predictor).getLookUpTable(), logger);
+                qLearner = new QLearner(neuralNetworkPredictor);
+            }*/
         }
     }
 }

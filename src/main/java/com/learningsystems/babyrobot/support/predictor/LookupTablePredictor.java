@@ -33,4 +33,13 @@ public class LookupTablePredictor implements Predictor {
     public void save(File dataFile) {
         lookUpTable.save(dataFile);
     }
+
+    @Override
+    public void saveAnother(File dataFile) {
+        lookUpTable.saveAnother(dataFile);
+    }
+
+    public LookUpTable getLookUpTable() {
+        return lookUpTable;
+    }
 }

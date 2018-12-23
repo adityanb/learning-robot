@@ -38,5 +38,9 @@ public class QLearner {
     public void save(File dataFile) {
         predictor.save(dataFile);
     }
+
+    public void saveAnother(File dataFile) {
+        predictor.saveAnother(dataFile);
+    }
 }
 
