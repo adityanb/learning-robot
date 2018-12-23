@@ -27,7 +27,9 @@ public class NeuralNetworkTrainer {
 
     public static void main(String[] args) {
 //        NeuralNetworkTrainer neuralNetwork = new NeuralNetworkTrainer(new ExplodedTrainingConstants());
-        NeuralNetworkTrainer neuralNetwork = new NeuralNetworkTrainer(new EncodedTrainingConstants());
+//        NeuralNetworkTrainer neuralNetwork = new NeuralNetworkTrainer(new EncodedTrainingConstants());
+//        NeuralNetworkTrainer neuralNetwork = new NeuralNetworkTrainer(new UnNormalizedExplodedTrainingConstants());
+        NeuralNetworkTrainer neuralNetwork = new NeuralNetworkTrainer(new UnNormalizedLUTTrainingConstants());
         File epochLog = new File(new StringJoiner("-")
                 .add(neuralNetwork.trainingConstants.getNameOfTraining())
                 .add(neuralNetwork.trainingConstants.stringRepresentation())

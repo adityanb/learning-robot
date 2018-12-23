@@ -8,6 +8,16 @@ import java.util.function.BiFunction;
 public class UnNormalizedLUTTrainingConstants extends EncodedTrainingConstants {
 
     @Override
+    public Double momentum() {
+        return 0.001;
+    }
+
+    @Override
+    public Double learnRate() {
+        return 0.00001;
+    }
+
+    @Override
     public String getNameOfTraining() {
         return "EncodedLUT-UnNormalized";
     }

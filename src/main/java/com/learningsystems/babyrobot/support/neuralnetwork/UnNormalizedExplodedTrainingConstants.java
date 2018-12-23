@@ -8,6 +8,16 @@ import java.util.function.BiFunction;
 public class UnNormalizedExplodedTrainingConstants extends ExplodedTrainingConstants {
 
     @Override
+    public Double momentum() {
+        return super.momentum();
+    }
+
+    @Override
+    public Double learnRate() {
+        return 0.0001;
+    }
+
+    @Override
     public String getNameOfTraining() {
         return "ExplodedLUT-UnNormalized";
     }
