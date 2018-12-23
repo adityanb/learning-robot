@@ -125,7 +125,7 @@ public class BabyRobot extends AdvancedRobot {
     private void onEndOfBattle() {
         if (getRoundNum() == getNumRounds() - 1) {
             qLearner.save(getDataFile(Constants.LOOKUP_TABLE_DB));
-            qLearner.saveAnother(getDataFile("Another.txt"));
+            qLearner.saveAnother(getDataFile(Constants.EXPLODED_LOOKUP_TABLE_DB));
             new ReportGenerator().generate(battleAuditor, getDataFile(Constants.BATTLE_REPORT_FILE));
         }
     }

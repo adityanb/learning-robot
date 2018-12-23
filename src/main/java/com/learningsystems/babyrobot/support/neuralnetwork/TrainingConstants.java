@@ -20,9 +20,12 @@ interface TrainingConstants {
     default String stringRepresentation() {
         StringJoiner joiner = new StringJoiner("-");
         joiner
+                .add(getInputNodes().toString())
                 .add(getHiddenNodes().toString())
                 .add(momentum().toString())
-                .add(learnRate().toString());
+                .add(learnRate().toString())
+                .add(getInputFile().getName())
+        ;
         return joiner.toString();
     }
 

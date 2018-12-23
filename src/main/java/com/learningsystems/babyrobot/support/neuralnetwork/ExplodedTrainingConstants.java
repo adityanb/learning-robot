@@ -1,5 +1,7 @@
 package com.learningsystems.babyrobot.support.neuralnetwork;
 
+import com.learningsystems.babyrobot.support.util.Constants;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -25,12 +27,12 @@ public class ExplodedTrainingConstants implements TrainingConstants {
 
     @Override
     public Double learnRate() {
-        return 0.0005;
+        return 0.0003;
     }
 
     @Override
     public File getInputFile() {
-        return new File("/Users/aditya/Development/ML/LearningSystemsRLRobot/target/classes/robots/BabyRobot.data/Another.txt");
+        return new File("/Users/aditya/Development/ML/LearningSystemsRLRobot/target/classes/robots/BabyRobot.data/" + Constants.EXPLODED_LOOKUP_TABLE_DB);
     }
 
     @Override

@@ -27,7 +27,8 @@ public class NeuralNetworkTrainer {
     }
 
     public static void main(String[] args) {
-        NeuralNetworkTrainer neuralNetwork = new NeuralNetworkTrainer(new ExplodedTrainingConstants());
+//        NeuralNetworkTrainer neuralNetwork = new NeuralNetworkTrainer(new ExplodedTrainingConstants());
+        NeuralNetworkTrainer neuralNetwork = new NeuralNetworkTrainer(new EncodedTrainingConstants());
         File inputFile = neuralNetwork.trainingConstants.getInputFile();
         File epochLog = new File(new StringJoiner("-")
                 .add(inputFile.getName())
@@ -55,8 +56,8 @@ public class NeuralNetworkTrainer {
                 epoch++;
                 currentError = train.getError();
                 System.out.println("Epoch: " + epoch + " Error:" + currentError);
-                writer.write(epoch + "," + currentError);
-            } while ((epoch < 5000) && (train.getError() > 0.005) && currentError != oldError);
+                writer.write(epoch + "," + currentError + "\n");
+            } while ((epoch < 20000) && (train.getError() > 0.005) && currentError != oldError);
             network.persist(trainingConstants.stringRepresentation() + "-Weights.ser");
         } catch (Exception e) {
             throw new RuntimeException(e);

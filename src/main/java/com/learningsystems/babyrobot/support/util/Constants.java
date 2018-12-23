@@ -9,6 +9,7 @@ import java.util.function.BiConsumer;
 public class Constants {
 
     public static final String LOOKUP_TABLE_DB = "LookupTable.txt";
+    public static final String EXPLODED_LOOKUP_TABLE_DB = "Exploded-LookupTable.txt";
     public static final String BATTLE_REPORT_FILE = "BattleReport.csv";
     public static final double LEARNING_RATE = 0.1;
     public static final double DISCOUNT_FACTOR = 0.9;

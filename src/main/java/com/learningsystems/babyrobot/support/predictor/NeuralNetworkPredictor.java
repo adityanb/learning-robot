@@ -12,6 +12,7 @@ import com.learningsystems.backpropagation.Train;
 
 import java.io.File;
 
+//Does not work because I am yet to figure out how to do online training
 public class NeuralNetworkPredictor implements Predictor {
     private final FeedforwardNetwork network;
 
