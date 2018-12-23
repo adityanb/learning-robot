@@ -41,7 +41,7 @@ public class BabyRobot extends AdvancedRobot {
         while (true) {
             options = getOptions(Constants.POLICY.OFF_POLICY, REWARD_POLICY.INTERMEDIATE, 50);
             setTurnRadarRight(360);
-            int state = getState();
+            double state = getState();
             Constants.ACTION action = qLearner.selectAction(state, options.getMovePolicy());
             action.perform(this, enemy);
             execute();

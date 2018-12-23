@@ -8,14 +8,14 @@ import java.io.File;
 public class QLearner {
 
     public Predictor predictor;
-    private int previousState;
+    private Double previousState;
     private Constants.ACTION previousAction = Constants.ACTION.FORWARD;
 
     public QLearner(Predictor predictor) {
         this.predictor = predictor;
     }
 
-    public void learn(int currentState, Constants.ACTION currentAction, double reward, Constants.POLICY policy) {
+    public void learn(Double currentState, Constants.ACTION currentAction, double reward, Constants.POLICY policy) {
         double lastQValue = predictor.getQValue(previousState, previousAction);
         double error;
         if (policy.equals(Constants.POLICY.OFF_POLICY)) {
@@ -31,7 +31,7 @@ public class QLearner {
         previousAction = currentAction;
     }
 
-    public Constants.ACTION selectAction(int state, Constants.MOVE_POLICY option) {
+    public Constants.ACTION selectAction(Double state, Constants.MOVE_POLICY option) {
         return option.equals(Constants.MOVE_POLICY.GREEDY) ? predictor.getBestAction(state).getKey() : Constants.ACTION.random();
     }
 

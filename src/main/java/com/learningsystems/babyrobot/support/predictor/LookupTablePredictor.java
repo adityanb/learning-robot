@@ -15,18 +15,18 @@ public class LookupTablePredictor implements Predictor {
     }
 
     @Override
-    public Pair<Constants.ACTION, Double> getBestAction(int state) {
-        return lookUpTable.getBestAction(state);
+    public Pair<Constants.ACTION, Double> getBestAction(Double state) {
+        return lookUpTable.getBestAction(state.intValue());
     }
 
     @Override
-    public double getQValue(int state, Constants.ACTION action) {
-        return lookUpTable.getQValue(state, action);
+    public double getQValue(Double state, Constants.ACTION action) {
+        return lookUpTable.getQValue(state.intValue(), action);
     }
 
     @Override
-    public void learn(int state, Constants.ACTION action, double qValue) {
-        lookUpTable.setQValue(state, action, qValue);
+    public void learn(Double state, Constants.ACTION action, double qValue) {
+        lookUpTable.setQValue(state.intValue(), action, qValue);
     }
 
     @Override

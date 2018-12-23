@@ -17,7 +17,7 @@ public class NeuralNetworkPredictor implements Predictor {
     }
 
     @Override
-    public Pair<Constants.ACTION, Double> getBestAction(int state) {
+    public Pair<Constants.ACTION, Double> getBestAction(Double state) {
         //Best action is the one that has the maximum Q-value
         double qValue = Double.NEGATIVE_INFINITY;
         Constants.ACTION action = null;
@@ -32,13 +32,13 @@ public class NeuralNetworkPredictor implements Predictor {
     }
 
     @Override
-    public double getQValue(int state, Constants.ACTION action) {
+    public double getQValue(Double state, Constants.ACTION action) {
         double[] doubles = input.network().computeOutputs(input.normalize(state, action));
         return doubles[0];
     }
 
     @Override
-    public void learn(int state, Constants.ACTION action, double qValue) {
+    public void learn(Double state, Constants.ACTION action, double qValue) {
         //Not implemented. Will have to do this once I figure out how to train the neural network "online" i.e., in streaming mode.
     }
 
@@ -57,7 +57,7 @@ public class NeuralNetworkPredictor implements Predictor {
             return (ordinal - stat.getAverage()) / (stat.getMax() - stat.getMin());
         }
 
-        double[] normalize(int state, Constants.ACTION action);
+        double[] normalize(Double state, Constants.ACTION action);
 
         FeedforwardNetwork network();
     }
@@ -84,8 +84,8 @@ public class NeuralNetworkPredictor implements Predictor {
         }
 
         @Override
-        public double[] normalize(int state, Constants.ACTION action) {
-            String[] splitInputs = quantizedState.decodeState(state).split(",");
+        public double[] normalize(Double state, Constants.ACTION action) {
+            String[] splitInputs = quantizedState.decodeState(state.intValue()).split(",");
             return new double[]{
                     Input.scaleMean(Double.valueOf(splitInputs[0]), selfBearingStat),
                     Input.scaleMean(Double.valueOf(splitInputs[1]), enemyDistanceStat),
@@ -114,7 +114,7 @@ public class NeuralNetworkPredictor implements Predictor {
         }
 
         @Override
-        public double[] normalize(int state, Constants.ACTION action) {
+        public double[] normalize(Double state, Constants.ACTION action) {
             return new double[]{Input.scaleMean(state, encodedStateStat), Input.scaleMean(action.ordinal(), encodedAction)};
         }
 

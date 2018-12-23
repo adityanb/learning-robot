@@ -13,11 +13,11 @@ public interface Predictor {
         return flavor.getImplementation(quantizedState);
     }
 
-    Pair<Constants.ACTION, Double> getBestAction(int state);
+    Pair<Constants.ACTION, Double> getBestAction(Double state);
 
-    double getQValue(int state, Constants.ACTION action);
+    double getQValue(Double state, Constants.ACTION action);
 
-    void learn(int state, Constants.ACTION action, double qValue);
+    void learn(Double state, Constants.ACTION action, double qValue);
 
     void save(File dataFile);
 
