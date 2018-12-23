@@ -1,10 +1,7 @@
 package robots;
 
 import com.learningsystems.babyrobot.support.Logger;
-import com.learningsystems.babyrobot.support.model.BattleAuditor;
-import com.learningsystems.babyrobot.support.model.BattleGroundDimension;
-import com.learningsystems.babyrobot.support.model.Enemy;
-import com.learningsystems.babyrobot.support.model.QuantizedState;
+import com.learningsystems.babyrobot.support.model.*;
 import com.learningsystems.babyrobot.support.predictor.Predictor;
 import com.learningsystems.babyrobot.support.rl.Options;
 import com.learningsystems.babyrobot.support.rl.QLearner;
@@ -147,15 +144,15 @@ public class BabyRobot extends AdvancedRobot {
     }
 
     private int getState() {
-        QuantizedState.QueryBuilder queryBuilder = new QuantizedState.QueryBuilder();
-        QuantizedState.Query query = queryBuilder
+        QuantizedQuery.Builder quantizingQueryBuilder = new QuantizedQuery.Builder();
+        QuantizedQuery quantizedQuery = quantizingQueryBuilder
                 .withHeading(getHeading())
                 .withXPosition(getX())
                 .withYPosition(getY())
                 .withEnemyDistance(enemy.getDistance())
                 .withEnemyBearing(enemy.getBearing())
                 .build();
-        return quantizedState.getStateRepresenting(query);
+        return quantizedState.getStateRepresenting(quantizedQuery);
     }
 
     private Options getOptions(Constants.POLICY policy, REWARD_POLICY rewardPolicy, int epsilon) {

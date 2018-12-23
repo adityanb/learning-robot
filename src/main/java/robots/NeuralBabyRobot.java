@@ -1,10 +1,7 @@
 package robots;
 
 import com.learningsystems.babyrobot.support.Logger;
-import com.learningsystems.babyrobot.support.model.BattleAuditor;
-import com.learningsystems.babyrobot.support.model.BattleGroundDimension;
-import com.learningsystems.babyrobot.support.model.Enemy;
-import com.learningsystems.babyrobot.support.model.QuantizedState;
+import com.learningsystems.babyrobot.support.model.*;
 import com.learningsystems.babyrobot.support.predictor.Predictor;
 import com.learningsystems.babyrobot.support.rl.Options;
 import com.learningsystems.babyrobot.support.rl.QLearner;
@@ -24,7 +21,7 @@ public class NeuralBabyRobot extends AdvancedRobot {
 
     //QLearner and QuantizedState are kept static so that we don't have to read and write the lookup table to the file at the end of each round
     private static QuantizedState quantizedState = new QuantizedState(new BattleGroundDimension(800, 600));
-    //    private static Predictor predictor = Predictor.get(Predictor.FLAVOR.NEURAL_NETWORK_ENCODED, quantizedState);
+    //        private static Predictor predictor = Predictor.get(Predictor.FLAVOR.NEURAL_NETWORK_ENCODED, quantizedState);
     private static Predictor predictor = Predictor.get(Predictor.FLAVOR.NEURAL_NETWORK_EXPLODED, quantizedState);
     private static QLearner qLearner = new QLearner(predictor);
     private static BattleAuditor battleAuditor;
@@ -96,15 +93,15 @@ public class NeuralBabyRobot extends AdvancedRobot {
     }
 
     private int getState() {
-        QuantizedState.QueryBuilder queryBuilder = new QuantizedState.QueryBuilder();
-        QuantizedState.Query query = queryBuilder
+        QuantizedQuery.Builder quantizingQueryBuilder = new QuantizedQuery.Builder();
+        QuantizedQuery quantizedQuery = quantizingQueryBuilder
                 .withHeading(getHeading())
                 .withXPosition(getX())
                 .withYPosition(getY())
                 .withEnemyDistance(enemy.getDistance())
                 .withEnemyBearing(enemy.getBearing())
                 .build();
-        return quantizedState.getStateRepresenting(query);
+        return quantizedState.getStateRepresenting(quantizedQuery);
     }
 
     private Options getOptions(Constants.POLICY policy, REWARD_POLICY rewardPolicy, int epsilon) {
