@@ -1,14 +1,18 @@
 package com.learningsystems.babyrobot.support.neuralnetwork;
 
 import com.learningsystems.babyrobot.support.util.Constants;
+import com.learningsystems.babyrobot.support.util.Normalization;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 
 public class ExplodedTrainingConstants implements TrainingConstants {
+
+    private File file = new File("/Users/aditya/Development/ML/LearningSystemsRLRobot/target/classes/robots/BabyRobot.data/" + Constants.EXPLODED_LOOKUP_TABLE_DB);
 
     @Override
     public Integer getInputNodes() {
@@ -31,14 +35,19 @@ public class ExplodedTrainingConstants implements TrainingConstants {
     }
 
     @Override
-    public File getInputFile() {
-        return new File("/Users/aditya/Development/ML/LearningSystemsRLRobot/target/classes/robots/BabyRobot.data/" + Constants.EXPLODED_LOOKUP_TABLE_DB);
+    public String getNameOfTraining() {
+        return "ExplodedLUT-Normalized";
+    }
+
+    @Override
+    public BiFunction<Integer, List<Double>[], double[][]> normalization() {
+        return (numberOfStates, inputs) -> Normalization.minMaxScaled(numberOfStates, inputs);
     }
 
     @Override
     public InputFileProcessingResult processInputFile() {
 
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(getInputFile()))) {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
             String line;
             int numberOfStates = Integer.parseInt(bufferedReader.readLine());
             List<List<Double>> allInputs = new ArrayList<>();

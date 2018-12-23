@@ -19,6 +19,10 @@ public class Normalization {
         return combineToArray(numberOfStates, scaledInputs);
     }
 
+    public static double[][] unNormalized(int numberOfStates, List<Double>... inputs) {
+        return combineToArray(numberOfStates, inputs);
+    }
+
     // Values between -1 and 1
     public static double[][] meanScaled(int numberOfStates, List<Double>... inputs) {
         List<Double>[] scaledInputs = new List[inputs.length];

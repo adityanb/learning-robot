@@ -1,7 +1,6 @@
 package com.learningsystems.babyrobot.support.neuralnetwork;
 
 import com.learningsystems.babyrobot.support.model.Pair;
-import com.learningsystems.babyrobot.support.util.Normalization;
 import com.learningsystems.backpropagation.Backpropagation;
 import com.learningsystems.backpropagation.FeedforwardLayer;
 import com.learningsystems.backpropagation.FeedforwardNetwork;
@@ -29,9 +28,8 @@ public class NeuralNetworkTrainer {
     public static void main(String[] args) {
 //        NeuralNetworkTrainer neuralNetwork = new NeuralNetworkTrainer(new ExplodedTrainingConstants());
         NeuralNetworkTrainer neuralNetwork = new NeuralNetworkTrainer(new EncodedTrainingConstants());
-        File inputFile = neuralNetwork.trainingConstants.getInputFile();
         File epochLog = new File(new StringJoiner("-")
-                .add(inputFile.getName())
+                .add(neuralNetwork.trainingConstants.getNameOfTraining())
                 .add(neuralNetwork.trainingConstants.stringRepresentation())
                 .add("EpochData.log")
                 .toString());
@@ -68,8 +66,8 @@ public class NeuralNetworkTrainer {
 
         TrainingConstants.InputFileProcessingResult result = trainingConstants.processInputFile();
 
-        double[][] inputs = Normalization.minMaxScaled(result.getNumberOfStates(), result.getInputs());
-        double[][] scaledQValues = Normalization.minMaxScaled(result.getNumberOfStates(), result.getOutputs());
+        double[][] inputs = trainingConstants.normalization().apply(result.getNumberOfStates(), result.getInputs());
+        double[][] scaledQValues = trainingConstants.normalization().apply(result.getNumberOfStates(), result.getOutputs());
 
         System.out.println("scaledQValues = " + Arrays.deepToString(scaledQValues));
         System.out.println("inputs = " + Arrays.deepToString(inputs));

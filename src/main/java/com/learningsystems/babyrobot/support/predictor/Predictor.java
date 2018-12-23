@@ -24,7 +24,9 @@ public interface Predictor {
     void saveAnother(File dataFile);
 
     enum FLAVOR {
-        LOOKUP_TABLE(LookupTablePredictor::new), NEURAL_NETWORK(NeuralNetworkPredictor::new);
+        LOOKUP_TABLE(LookupTablePredictor::new), NEURAL_NETWORK(state -> {
+            return new NeuralNetworkPredictor();
+        });
 
         private Function<QuantizedState, Predictor> predictorFunction;
 

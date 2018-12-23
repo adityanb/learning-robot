@@ -1,8 +1,8 @@
 package com.learningsystems.babyrobot.support.neuralnetwork;
 
-import java.io.File;
 import java.util.List;
 import java.util.StringJoiner;
+import java.util.function.BiFunction;
 
 interface TrainingConstants {
     Integer getInputNodes();
@@ -13,7 +13,9 @@ interface TrainingConstants {
 
     Double learnRate();
 
-    File getInputFile();
+    String getNameOfTraining();
+
+    BiFunction<Integer, List<Double>[], double[][]> normalization();
 
     InputFileProcessingResult processInputFile();
 
@@ -24,7 +26,7 @@ interface TrainingConstants {
                 .add(getHiddenNodes().toString())
                 .add(momentum().toString())
                 .add(learnRate().toString())
-                .add(getInputFile().getName())
+                .add(getNameOfTraining())
         ;
         return joiner.toString();
     }
