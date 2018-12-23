@@ -8,23 +8,17 @@ import com.learningsystems.backpropagation.FeedforwardNetwork;
 import java.io.File;
 import java.util.List;
 
-//Does not work because I am yet to figure out how to do online training
 public class NeuralNetworkPredictor implements Predictor {
-    private final FeedforwardNetwork network;
-    private final Normalization.Stat encodedStateStat;
-    private final Normalization.Stat encodedAction;
+    private Input input;
 
-    public NeuralNetworkPredictor() {
-        network = FeedforwardNetwork.loadFromFile("/Users/aditya/Development/ML/LearningSystemsRLRobot/data/TrainingRuns/EncodedLUT-Normalized-IN-2-HN-9-MTM-0.5-LR-6.0E-4-Weights.ser");
-        List<Normalization.Stat> stats = Normalization.Stat.load("/Users/aditya/Development/ML/LearningSystemsRLRobot/data/TrainingRuns/EncodedLUT-Normalized-IN-2-HN-9-MTM-0.5-LR-6.0E-4-stats.txt");
-        encodedStateStat = stats.get(0);
-        encodedAction = stats.get(1);
+    public NeuralNetworkPredictor(Input input) {
+        this.input = input;
     }
 
     public static void main(String[] args) {
-        NeuralNetworkPredictor neuralNetworkPredictor = new NeuralNetworkPredictor();
+        /*NeuralNetworkPredictor neuralNetworkPredictor = new NeuralNetworkPredictor(state);
         Pair<Constants.ACTION, Double> bestAction = neuralNetworkPredictor.getBestAction(908);
-        System.out.println("bestAction = " + bestAction);
+        System.out.println("bestAction = " + bestAction);*/
     }
 
     @Override
@@ -44,11 +38,8 @@ public class NeuralNetworkPredictor implements Predictor {
 
     @Override
     public double getQValue(int state, Constants.ACTION action) {
-        double[] input = {scaleMean(state, encodedStateStat), scaleMean(action.ordinal(), encodedAction)};
-//        double[] input = {-0.48871037776812853, 0.5};
-        double[] doubles = network.computeOutputs(input);
+        double[] doubles = input.network().computeOutputs(input.normalize(state, action));
         return doubles[0];
-
     }
 
     @Override
@@ -66,8 +57,35 @@ public class NeuralNetworkPredictor implements Predictor {
 
     }
 
-    private double scaleMean(int ordinal, Normalization.Stat stat) {
-        return (ordinal - stat.getAverage()) / (stat.getMax() - stat.getMin());
+    interface Input {
+        static double scaleMean(int ordinal, Normalization.Stat stat) {
+            return (ordinal - stat.getAverage()) / (stat.getMax() - stat.getMin());
+        }
+
+        double[] normalize(int state, Constants.ACTION action);
+
+        FeedforwardNetwork network();
     }
 
+    static class EncodedInput implements Input {
+
+        private final Normalization.Stat encodedStateStat;
+        private final Normalization.Stat encodedAction;
+
+        public EncodedInput() {
+            List<Normalization.Stat> stats = Normalization.Stat.load("/Users/aditya/Development/ML/LearningSystemsRLRobot/data/TrainingRuns/EncodedLUT-Normalized-IN-2-HN-9-MTM-0.5-LR-6.0E-4-stats.txt");
+            encodedStateStat = stats.get(0);
+            encodedAction = stats.get(1);
+        }
+
+        @Override
+        public double[] normalize(int state, Constants.ACTION action) {
+            return new double[]{Input.scaleMean(state, encodedStateStat), Input.scaleMean(action.ordinal(), encodedAction)};
+        }
+
+        @Override
+        public FeedforwardNetwork network() {
+            return FeedforwardNetwork.loadFromFile("/Users/aditya/Development/ML/LearningSystemsRLRobot/data/TrainingRuns/EncodedLUT-Normalized-IN-2-HN-9-MTM-0.5-LR-6.0E-4-Weights.ser");
+        }
+    }
 }

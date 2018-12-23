@@ -175,7 +175,7 @@ public class BabyRobot extends AdvancedRobot {
             logger.log("Old policy: " + oldMovePolicy + " New policy: " + movePolicy + " Round: " + roundNum);
             oldMovePolicy = movePolicy;
            /* if (getRoundNum() > 0) {
-                NeuralNetworkPredictor neuralNetworkPredictor = (NeuralNetworkPredictor) Predictor.get(Predictor.FLAVOR.NEURAL_NETWORK, quantizedState);
+                NeuralNetworkPredictor neuralNetworkPredictor = (NeuralNetworkPredictor) Predictor.get(Predictor.FLAVOR.NEURAL_NETWORK_ENCODED, quantizedState);
                 neuralNetworkPredictor.train(((LookupTablePredictor) BabyRobot.predictor).getLookUpTable(), logger);
                 qLearner = new QLearner(neuralNetworkPredictor);
             }*/
