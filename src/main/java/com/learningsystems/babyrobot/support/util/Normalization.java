@@ -33,8 +33,7 @@ public class Normalization {
         for (int i = 0; i < inputs.length; i++) {
             List<Double> scaled = meanScale(inputs[i]);
             scaledInputs[i] = scaled;
-            String stats = getStats(inputs[i]).toString();
-            writer.write(stats + "\n");
+            writer.write(getStats(inputs[i]).toString() + "\n");
         }
         return combineToArray(numberOfStates, scaledInputs);
     }

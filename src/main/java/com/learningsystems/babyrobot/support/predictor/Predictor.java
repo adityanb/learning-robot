@@ -24,10 +24,16 @@ public interface Predictor {
     void saveAnother(File dataFile);
 
     enum FLAVOR {
-        LOOKUP_TABLE(LookupTablePredictor::new), NEURAL_NETWORK_ENCODED(state -> {
+        LOOKUP_TABLE(LookupTablePredictor::new),
+        NEURAL_NETWORK_ENCODED(state -> {
             NeuralNetworkPredictor.Input input = new NeuralNetworkPredictor.EncodedInput();
             return new NeuralNetworkPredictor(input);
-        });
+        }),
+        NEURAL_NETWORK_EXPLODED(state -> {
+            NeuralNetworkPredictor.Input input = new NeuralNetworkPredictor.ExplodedInput(state);
+            return new NeuralNetworkPredictor(input);
+        }),
+        ;
 
         private Function<QuantizedState, Predictor> predictorFunction;
 

@@ -24,7 +24,8 @@ public class NeuralBabyRobot extends AdvancedRobot {
 
     //QLearner and QuantizedState are kept static so that we don't have to read and write the lookup table to the file at the end of each round
     private static QuantizedState quantizedState = new QuantizedState(new BattleGroundDimension(800, 600));
-    private static Predictor predictor = Predictor.get(Predictor.FLAVOR.NEURAL_NETWORK_ENCODED, quantizedState);
+    //    private static Predictor predictor = Predictor.get(Predictor.FLAVOR.NEURAL_NETWORK_ENCODED, quantizedState);
+    private static Predictor predictor = Predictor.get(Predictor.FLAVOR.NEURAL_NETWORK_EXPLODED, quantizedState);
     private static QLearner qLearner = new QLearner(predictor);
     private static BattleAuditor battleAuditor;
     private static boolean isNewBattle = true;
@@ -42,11 +43,12 @@ public class NeuralBabyRobot extends AdvancedRobot {
         });
         initRobot();
         while (true) {
-            options = getOptions(Constants.POLICY.OFF_POLICY, REWARD_POLICY.INTERMEDIATE, 10);
+            options = getOptions(Constants.POLICY.OFF_POLICY, REWARD_POLICY.INTERMEDIATE, 50);
             setTurnRadarRight(360);
             int state = getState();
             Constants.ACTION action = qLearner.selectAction(state, options.getMovePolicy());
             action.perform(this, enemy);
+//            logger.log(action.name());
             execute();
 
         }

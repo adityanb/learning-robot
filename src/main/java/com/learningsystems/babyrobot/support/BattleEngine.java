@@ -16,7 +16,7 @@ public class BattleEngine {
         RobocodeEngine engine = new RobocodeEngine();
         engine.addBattleListener(new BattleObserver());
 
-        int numberOfRounds = 10;
+        int numberOfRounds = 10000;
         BattlefieldSpecification battlefield = new BattlefieldSpecification(800, 600); // 800x600
 //        RobotSpecification[] selectedRobots = engine.getLocalRepository("robots.BabyRobot,sample.Corners");
         RobotSpecification[] selectedRobots = engine.getLocalRepository("robots.NeuralBabyRobot,sample.Corners");
