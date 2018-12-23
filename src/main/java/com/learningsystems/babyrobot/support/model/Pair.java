@@ -21,4 +21,12 @@ public class Pair<K, V> {
     public static <K, V> Pair<K, V> of(K k, V v) {
         return new Pair<>(k, v);
     }
+
+    @Override
+    public String toString() {
+        return "Pair{" +
+                "key=" + key +
+                ", value=" + value +
+                '}';
+    }
 }

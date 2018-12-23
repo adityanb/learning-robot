@@ -26,14 +26,13 @@ public class NeuralNetworkTrainer {
     }
 
     public static void main(String[] args) {
-//        NeuralNetworkTrainer neuralNetwork = new NeuralNetworkTrainer(new ExplodedTrainingConstants());
+        NeuralNetworkTrainer neuralNetwork = new NeuralNetworkTrainer(new ExplodedTrainingConstants());
 //        NeuralNetworkTrainer neuralNetwork = new NeuralNetworkTrainer(new EncodedTrainingConstants());
 //        NeuralNetworkTrainer neuralNetwork = new NeuralNetworkTrainer(new UnNormalizedExplodedTrainingConstants());
-        NeuralNetworkTrainer neuralNetwork = new NeuralNetworkTrainer(new UnNormalizedLUTTrainingConstants());
+//        NeuralNetworkTrainer neuralNetwork = new NeuralNetworkTrainer(new UnNormalizedLUTTrainingConstants());
         File epochLog = new File(new StringJoiner("-")
-                .add(neuralNetwork.trainingConstants.getNameOfTraining())
                 .add(neuralNetwork.trainingConstants.stringRepresentation())
-                .add("EpochData.log")
+                .add("EpochData.csv")
                 .toString());
         neuralNetwork.train(epochLog);
     }
@@ -56,8 +55,10 @@ public class NeuralNetworkTrainer {
                 epoch++;
                 currentError = train.getError();
                 System.out.println("Epoch: " + epoch + " Error:" + currentError);
-                writer.write(epoch + "," + currentError + "\n");
-            } while ((epoch < 20000) && (train.getError() > 0.005) && currentError != oldError);
+                if (epoch % 100 == 0) {
+                    writer.write(epoch + "," + currentError + "\n");
+                }
+            } while ((epoch < 10000) && (train.getError() > 0.005) && currentError != oldError);
             network.persist(trainingConstants.stringRepresentation() + "-Weights.ser");
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -18,7 +18,8 @@ public class BattleEngine {
 
         int numberOfRounds = 10000;
         BattlefieldSpecification battlefield = new BattlefieldSpecification(800, 600); // 800x600
-        RobotSpecification[] selectedRobots = engine.getLocalRepository("robots.BabyRobot,sample.Corners");
+//        RobotSpecification[] selectedRobots = engine.getLocalRepository("robots.BabyRobot,sample.Corners");
+        RobotSpecification[] selectedRobots = engine.getLocalRepository("robots.NeuralBabyRobot,sample.Corners");
         BattleSpecification battleSpec = new BattleSpecification(numberOfRounds, battlefield, selectedRobots);
 
         // Run our specified battle and let it run till it is over

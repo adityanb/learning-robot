@@ -1,14 +1,12 @@
 package com.learningsystems.babyrobot.support.neuralnetwork;
 
 import com.learningsystems.babyrobot.support.util.Constants;
-import com.learningsystems.babyrobot.support.util.Normalization;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiFunction;
 
 public class ExplodedTrainingConstants implements TrainingConstants {
 
@@ -26,22 +24,17 @@ public class ExplodedTrainingConstants implements TrainingConstants {
 
     @Override
     public Double momentum() {
-        return 0.01;
+        return 0.5;
     }
 
     @Override
     public Double learnRate() {
-        return 0.0003;
+        return 0.0005;
     }
 
     @Override
     public String getNameOfTraining() {
         return "ExplodedLUT-Normalized";
-    }
-
-    @Override
-    public BiFunction<Integer, List<Double>[], double[][]> normalization() {
-        return (numberOfStates, inputs) -> Normalization.minMaxScaled(numberOfStates, inputs);
     }
 
     @Override
@@ -82,6 +75,7 @@ public class ExplodedTrainingConstants implements TrainingConstants {
 
                 qValues.add(Double.valueOf(dataSplit[1]));
             }
+
             return new InputFileProcessingResult(allInputs.toArray(new List[]{}), numberOfStates, allOutputs.toArray(new List[]{}));
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -1,35 +1,38 @@
 package com.learningsystems.babyrobot.support.util;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 public class Normalization {
 
     // Values are between 0 and 1
-    public static double[][] minMaxScaled(int numberOfStates, List<Double>... inputs) {
+   /* public static double[][] minMaxScaled(int numberOfStates, List<Double>... inputs) {
         List<Double>[] scaledInputs = new List[inputs.length];
         for (int i = 0; i < inputs.length; i++) {
             List<Double> scaled = minMaxScale(inputs[i]);
-            printMinMax(scaled);
+            getStats(scaled);
             scaledInputs[i] = scaled;
         }
         return combineToArray(numberOfStates, scaledInputs);
-    }
+    }*/
 
     public static double[][] unNormalized(int numberOfStates, List<Double>... inputs) {
         return combineToArray(numberOfStates, inputs);
     }
 
     // Values between -1 and 1
-    public static double[][] meanScaled(int numberOfStates, List<Double>... inputs) {
+    public static double[][] meanScaled(int numberOfStates, BufferedWriter writer, List<Double>... inputs) throws IOException {
         List<Double>[] scaledInputs = new List[inputs.length];
         for (int i = 0; i < inputs.length; i++) {
             List<Double> scaled = meanScale(inputs[i]);
-            printMinMax(scaled);
             scaledInputs[i] = scaled;
+            String stats = getStats(scaled).toString();
+            writer.write(stats + "\n");
         }
         return combineToArray(numberOfStates, scaledInputs);
     }
@@ -48,15 +51,11 @@ public class Normalization {
         l2.add(34d);
         l2.add(-45d);
         l2.add(0.55);
-
-        double[][] doubles = minMaxScaled(5, l1, l2);
-
-        System.out.println("doubles = " + Arrays.deepToString(doubles));
     }
 
-    private static void printMinMax(List<Double> scaled) {
-        System.out.println("Min: " + Collections.min(scaled));
-        System.out.println("Max: " + Collections.max(scaled));
+    private static Stats getStats(List<Double> scaled) {
+        double average = scaled.stream().mapToDouble(value -> value).average().orElseThrow(() -> new RuntimeException("No average!"));
+        return new Stats(average, Collections.max(scaled), Collections.min(scaled));
     }
 
     private static double[][] combineToArray(Integer numberOfStates, List<Double>... inputs) {
@@ -82,4 +81,27 @@ public class Normalization {
         return states.stream().map(x -> (x - average) / (max - min)).collect(Collectors.toList());
     }
 
+    public static class Stats {
+        double average;
+        double max;
+        double min;
+        private final String representation;
+
+        public Stats(double average, double max, double min) {
+            this.average = average;
+            this.max = max;
+            this.min = min;
+            StringJoiner stringJoiner = new StringJoiner(",");
+            representation = stringJoiner
+                    .add(String.valueOf(average))
+                    .add(String.valueOf(min))
+                    .add(String.valueOf(max))
+                    .toString();
+        }
+
+        @Override
+        public String toString() {
+            return representation;
+        }
+    }
 }

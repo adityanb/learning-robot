@@ -11,7 +11,7 @@ public class NeuralNetworkPredictor implements Predictor {
     private final FeedforwardNetwork network;
 
     public NeuralNetworkPredictor() {
-        network = FeedforwardNetwork.loadFromFile();
+        network = FeedforwardNetwork.loadFromFile("/Users/aditya/Development/ML/LearningSystemsRLRobot/data/TrainingRuns/2-9-0.01-5.0E-4-LookupTable.txt-Weights.ser");
     }
 
     @Override
@@ -29,9 +29,15 @@ public class NeuralNetworkPredictor implements Predictor {
         return Pair.of(action, qValue);
     }
 
+    public static void main(String[] args) {
+        NeuralNetworkPredictor neuralNetworkPredictor = new NeuralNetworkPredictor();
+        Pair<Constants.ACTION, Double> bestAction = neuralNetworkPredictor.getBestAction(567);
+        System.out.println("bestAction = " + bestAction);
+    }
+
     @Override
     public double getQValue(int state, Constants.ACTION action) {
-        double[] doubles = network.computeOutputs(new double[]{state, action.ordinal()});
+        double[] doubles = network.computeOutputs(new double[]{scaleMinMax(state), scaleMinMax(action.ordinal())});
         return doubles[0];
 
     }
@@ -49,5 +55,12 @@ public class NeuralNetworkPredictor implements Predictor {
     @Override
     public void saveAnother(File dataFile) {
 
+    }
+
+    private double scaleMinMax(int ordinal) {
+        int min = 0;
+        int max = 1;
+
+        return ordinal - min;
     }
 }
